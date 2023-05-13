@@ -6,15 +6,42 @@ import "./styles.css";
 const RegistrationForm = () => {
   const [showPassword, setShowPassword] = useState(false);
 
+  const handleSubmit = async (values, actions) => {
+    try {
+      const response = await fetch("http://localhost:4000/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Registration failed");
+      }
+
+      // Registration successful, reset the form and show a success message
+      actions.resetForm();
+      alert("Registration successful");
+    } catch (error) {
+      console.error(error);
+      if (error.message === "User with this email is already registered") {
+        alert("User with this email is already registered");
+      } else {
+        alert("Registration failed");
+      }
+    } finally {
+      actions.setSubmitting(false);
+    }
+  };
+
   return (
     <Formik
       initialValues={{ name: "", email: "", password: "" }}
       validationSchema={validationSchema}
-      onSubmit={(values, actions) => {
-        console.log(values);
-        actions.setSubmitting(false);
-        actions.resetForm();
-      }}
+      onSubmit={handleSubmit}
     >
       {({ isSubmitting }) => (
         <Form className="registration-form">

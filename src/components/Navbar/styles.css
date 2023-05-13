@@ -14,6 +14,9 @@ padding: 0px 10px;
 
 ul{
     display: flex;
-    width: 10%;
     justify-content: space-around;
+}
+
+li{
+    margin:0 10px;
 }
